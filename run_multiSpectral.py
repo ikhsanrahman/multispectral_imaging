@@ -143,16 +143,17 @@ while status:
 	gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 	gray = cv2.GaussianBlur(gray, (21,21), 0)
 	if first_frame is None:
-			time.sleep(5)
-			first_frame = gray
-			continue
+		time.sleep(10)
+		first_frame = gray
+		continue
+
 	delta_frame = cv2.absdiff(first_frame, gray)
 
 	if mean is None:
 		mean = np.mean(delta_frame)
 		continue
-			
-	if np.mean(delta_frame) > mean+10 or np.mean(delta_frame) < mean-10:
+	print("delta", np.mean(delta_frame), mean)
+	if np.mean(delta_frame) > mean+35 or np.mean(delta_frame) < mean-35:
 		responses['moved'] = '1'
 		print('object moved')
 	else:
@@ -172,13 +173,10 @@ while status:
 	# cv2.imshow('frame', frame)
 	# cv2.imshow('capturing', gray)
 	cv2.imshow('delta', delta_frame)
-	# cv2.imshow('thresh', thresh_delta)
+	cv2.imshow('thresh', thresh_delta)
 
 	#end move detection area
 
-
-	# change status capturing 
-	# if key_input == ord('s'):
 	if responses['moved'] == '1':
 		status_capturing = True
 		if status_gerak == False:
@@ -189,6 +187,10 @@ while status:
 		status_gerak = True
 
 	if frameCount < 11 and status_capturing == True:
+		if frameCount < 10 :
+			print ('**pos={}'.format(frameCount + 1), fwl.command('pos={}'.format(frameCount + 1)))
+			print ('**pos?', fwl.query('pos?'))
+
 		if frameCount > 0:
 				output_image = cv2.resize(output_image, (1024,1088))
 				cv2.imwrite(str(frameCount) + '.png', output_image)
@@ -196,12 +198,10 @@ while status:
 						for data in output_image:
 								np.savetxt(file, data)
 
-		if frameCount < 10 :
-				print ('**pos={}'.format(frameCount + 1), fwl.command('pos={}'.format(frameCount + 1)))
-				print ('**pos?', fwl.query('pos?'))
+		
 				
 		frameCount += 1
-	print(frameCount)
+
 	if frameCount == 11:
 		responses = {}
 		# kirim sinyal ke arduino untuk jalankan conveyour
@@ -211,7 +211,7 @@ while status:
 		status_gerak = False
 		os.chdir('..')
 		os.chdir('..')
-		time.sleep(5)
+		time.sleep(15)
 
 st_device.acquisition_stop()
 st_datastream.stop_acquisition()

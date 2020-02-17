@@ -180,13 +180,13 @@ class DataProcessing:
 
         x_train = self.inp_data
         y_train = one_hot_labels
-        # x_val = self.inp_data[31:33]
-        # y_val = one_hot_labels[31:33]
+        x_val = self.inp_data[10:12]
+        y_val = one_hot_labels[10:12]
 
         # self.x_train, self.x_val, self.y_train, self.y_val = train_test_split(self.inp_data, one_hot_labels, test_size=0.1, random_state=20)
 
         result['x_train'] = x_train
-        # result['x_val'] = x_val
+        result['x_val'] = x_val
         result['y_train'] = y_train
         # result['y_val'] = y_val
 
@@ -255,6 +255,7 @@ class NewPrediction:
         infile = open(self.filename, 'rb')
         param = pickle.load(infile)
         result = self.getPrediction(self.newInput, param['w1'], param['b1'], param['w2'], param['b2'], param['w3'], param['b3'])
+        print(result[0], result.shape, "result")
         (m,i) = max((v, i) for i,v in enumerate(result[0]))
 
         outcome = {}
@@ -266,7 +267,7 @@ class NewPrediction:
             outcome['message'] = 'Matang'
             outcome['index'] = '1'
         
-        Window(outcome['message'])
+        # Window(outcome['message'])
 
         return outcome  
 

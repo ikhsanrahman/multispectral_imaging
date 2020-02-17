@@ -12,8 +12,8 @@ from annv2c import NewPrediction
 #communicate with arduino to read and write data
 # port_arduino = 'COM 4'
 # toArduino1 = serial.Serial(port_arduino,9600, timeout=1)
-port_arduino2 = 'COM 5'
-toArduino2 = serial.Serial(port_arduino2, 9600, timeout=1)
+# port_arduino2 = 'COM 5'
+# toArduino2 = serial.Serial(port_arduino2, 9600, timeout=1)
 
 DISPLAY_RESIZE_FACTOR = 0.3
 
@@ -135,8 +135,7 @@ while status:
     if mean is None:
         mean = np.mean(delta_frame)
         continue
-    print(np.mean(delta_frame))
-    print(np.mean(delta_frame))
+        
     if np.mean(delta_frame) > mean+10 or np.mean(delta_frame) < mean-10:
         responses['moved'] = '1'
         print('object moved')
@@ -166,7 +165,7 @@ while status:
         time.sleep(1)
         # conveyor_stoped = toArduino2.write(str.encode(responses['moved']))
 
-        conveyor_stoped = toArduino2.write(str.encode('0'))
+        # conveyor_stoped = toArduino2.write(str.encode('0'))
         print('conveyor stop moving')
 
         status = False
@@ -183,6 +182,7 @@ while status:
             result_array = np.append(result_array, crop_frame, axis=2)
 
         result_array = result_array[:,:,1:101]
+        cv2.imshow('hasil scan', result_array)
 
         # Modify matrix of white reference and dark reference
         file_wr = 'wr.mat'
@@ -237,13 +237,13 @@ while status:
 
         # Sending result response to arduino to turn on conveyor
         # conveyor_moved = toArduino2.write(str.encode(mv_dtc['status_off']))
-        print('conveyor moved {}'.format(conveyor_moved))
+        # print('conveyor moved {}'.format(conveyor_moved))
         time.sleep(3)
 
         #move arm
         time.sleep(1)
         # arm_moved = toArduino1.write( str.encode(result['index']))
-        print('arm_moved'.format(arm_moved))
+        # print('arm_moved'.format(arm_moved))
         
         print ("Program done")
 
